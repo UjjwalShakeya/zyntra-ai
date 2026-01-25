@@ -2,8 +2,8 @@
 
 // external imports 
 import { BrowserRouter } from "react-router-dom";
-import { createRoot } from 'react-dom/client';
-import { ClerkProvider } from '@clerk/clerk-react'
+import { createRoot } from 'react-dom/client'
+import { ClerkProvider } from "@clerk/clerk-react";
 
 // local imports 
 import './index.css'

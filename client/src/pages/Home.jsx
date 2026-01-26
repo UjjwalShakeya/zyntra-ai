@@ -1,7 +1,9 @@
-import React from 'react'
+
+// All local components
 import Navbar from '../components/Navbar'
 import Hero from '../components/Hero'
 import AiTools from '../components/AiTools'
+import Testimonial from '../components/Testimonial'
 
 const Home = () => {
   return (
@@ -9,8 +11,9 @@ const Home = () => {
       <Navbar />
       <Hero />
       <AiTools />
+      <Testimonial />
     </>
   )
 }
-  
+
 export default Home

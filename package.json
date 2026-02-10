@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "@clerk/express": "^1.7.69",
-    "@neondatabase/serverless": "^1.0.2"
-  }
-}

@@ -16,11 +16,11 @@ export const generateArticle = async (req, res, next) => {
         // getting plan from request
         const plan = req.plan;
         // getting user usage from request
-        const user_usage = req.user_usage;
+        const free_usage = req.free_usage;
 
 
         // if user does not have free plan and user also has hit it's free limit then we should stop user to use feature no longer
-        if (plan !== "premium" && user_usage >= 10) {
+        if (plan !== "premium" && free_usage >= 10) {
             res.json({ success: false, message: "Limit reached. Upgrade to continue." })
         }
 
@@ -33,16 +33,16 @@ export const generateArticle = async (req, res, next) => {
                 },
             ],
             temperature: 0.7,
-            max_ltokens
+            max_tokens: length
         })
         const content = response.choices[0].message.content;
 
-        await sql` INSERT INTO creations(user_id,prompt,content,type) VALUES (${userId},${prompt},${content},'article')`
+        await sql` INSERT INTO creations (user_id,prompt,content,type) VALUES (${userId},${prompt},${content},'article')`;
 
         if (plan !== "premium") {
             clerkClient.users.updateUserMetadata(userId, {
                 privateMetadata: {
-                    user_usage: user_usage + 1
+                    free_usage: free_usage + 1
                 }
             })
         };
@@ -51,7 +51,7 @@ export const generateArticle = async (req, res, next) => {
         res.json({ success: true, content })
 
     } catch (error) {
-        console.log(error.message); 
+        console.log(error.message);
         res.json({ success: false, message: error.message });
     }
 };

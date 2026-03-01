@@ -1,7 +1,7 @@
 // importing required modules
 import { clerkClient } from "@clerk/express";
 
-
+// middleware to check whether user is on free plan or premium plan
 export const auth = async (req, res, next) => {
     try {
         const { userId, has } = await req.auth();

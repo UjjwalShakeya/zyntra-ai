@@ -3,6 +3,7 @@ import express from 'express';
 import cors from "cors";
 import 'dotenv/config';
 import { clerkMiddleware,requireAuth } from '@clerk/express'
+import aiRouter from './routes/ai.routes.js';
 
 // initializing express app
 const app = express();
@@ -17,6 +18,8 @@ app.get('/', (req,res)=> res.send('Server is Live'))
 
 // all routes will be protected using require auth
 app.use(requireAuth());
+
+app.use('/api/ai',aiRouter)
 
 // starting the server
 const PORT = process.env.PORT || 3000;

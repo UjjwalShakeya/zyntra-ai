@@ -5,3 +5,4 @@ import multer from "multer";
 // creating diskstorage
 const storage = multer.diskStorage({});
 
+export const upload = multer({storage})

@@ -1,5 +1,5 @@
 // importing the required modules
-import sql from "../configs/db";
+import sql from "../configs/db.js";
 
 
 // controller to get the get logged in user creations for example you are logged in and you are tryin go get the creations of you

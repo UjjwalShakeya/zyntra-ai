@@ -1,7 +1,7 @@
 // importing required modules
 import express from "express";
-import auth from "../middlewares/auth.middleware";
-import { getPublicCreations, getUserCreations, toggleLikeCreation } from "../controllers/user.controller";
+import {auth} from "../middlewares/auth.middleware.js";
+import { getPublicCreations, getUserCreations, toggleLikeCreation } from "../controllers/user.controller.js";
 
 const userRouter = express.Router();
 

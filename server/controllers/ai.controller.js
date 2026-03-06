@@ -62,7 +62,6 @@ export const generateArticle = async (req, res) => {
 
 // controller to generate blog title
 export const generateBlogTitle = async (req, res) => {
-
     try {
         const { userId } = req.auth();
         const { prompt } = req.body;
@@ -72,10 +71,9 @@ export const generateBlogTitle = async (req, res) => {
         // getting user usage from request
         const free_usage = req.free_usage;
 
-
         // if user does not have free plan and user also has hit it's free limit then we should stop user to use feature no longer
         if (plan !== "premium" && free_usage >= 10) {
-            res.json({ success: false, message: "Limit reached. Upgrade to continue." })
+            return res.json({ success: false, message: "Limit reached. Upgrade to continue." })
         }
 
         const response = await AI.chat.completions.create({
@@ -87,9 +85,10 @@ export const generateBlogTitle = async (req, res) => {
                 },
             ],
             temperature: 0.7,
-            max_tokens: 100
         })
+        
         const content = response.choices[0].message.content;
+        
 
         await sql` INSERT INTO creations (user_id,prompt,content,type) VALUES (${userId},${prompt},${content},'blog-title')`;
 
@@ -102,11 +101,11 @@ export const generateBlogTitle = async (req, res) => {
         };
 
         // responding with content
-        res.json({ success: true, content })
+        return res.json({ success: true, content })
 
     } catch (error) {
         console.log(error.message);
-        res.json({ success: false, message: error.message });
+        return res.json({ success: false, message: error.message });
     }
 };
 

@@ -4,7 +4,8 @@ import { clerkClient } from "@clerk/express";
 import axios from "axios";
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
-import {PDFParse} from "pdf-parse";
+import { PDFParse } from "pdf-parse";
+import { arrayBuffer } from "stream/consumers";
 
 const AI = new OpenAI({
     apiKey: process.env.GEMINI_API_KEY,
@@ -86,9 +87,9 @@ export const generateBlogTitle = async (req, res) => {
             ],
             temperature: 0.7,
         })
-        
+
         const content = response.choices[0].message.content;
-        
+
 
         await sql` INSERT INTO creations (user_id,prompt,content,type) VALUES (${userId},${prompt},${content},'blog-title')`;
 
@@ -128,13 +129,13 @@ export const generateImage = async (req, res) => {
         formData.append('prompt', prompt);
 
         const { data } = await axios.post(
-            "https://clipdrop-api.co/text-to-image/v1",
+            'https://clipdrop-api.co/text-to-image/v1',
             formData,
             {
                 headers: {
-                    "x-api-key": process.env.CLIPDROP_API_KEY,
+                    'x-api-key': process.env.CLIPDROP_API_KEY,
                 },
-                responseType: "arraybuffer",
+                responseType: arrayBuffer
             }
         );
 
@@ -145,7 +146,7 @@ export const generateImage = async (req, res) => {
         await sql` INSERT INTO creations (user_id,prompt,content,type,publish) VALUES (${userId},${prompt},${secure_url},'image', ${publish ?? false})`;
 
         // responding with content
-        res.json({ success: true, content: secure_url })
+        return res.json({ success: true, content: secure_url })
 
     } catch (error) {
         console.log(error.message);

@@ -10,6 +10,7 @@ import connectCloudinary from './configs/cloudinary.js';
 // initializing express app
 const app = express();
 
+// connecting to cloudinary
 await connectCloudinary();
 
 // middleware

@@ -46,7 +46,6 @@ const BlogTitles = () => {
                     Authorization: `Bearer ${await getToken()}`
                 }
             });
-            console.log(data)
             if (data.success) {
                 setContent(data.content)
             } else {

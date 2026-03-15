@@ -7,6 +7,7 @@ export const getUserCreations = async (req, res) => {
     try {
         const { userId } = req.auth();
         const creations = await sql`SELECT * FROM creations WHERE user_id = ${userId} ORDER BY created_at DESC`;
+
         return res.json({ success: true, creations });
     } catch (error) {
         return res.json({ success: false, message: error.message });
@@ -18,7 +19,6 @@ export const getUserCreations = async (req, res) => {
 export const getPublicCreations = async (req, res) => {
     try {
         const creations = await sql`SELECT * FROM creations WHERE publish = true ORDER BY created_at DESC`;
-        console.log(creations);
         return res.json({ success: true, creations });
     } catch (error) {
         return res.json({ success: false, message: error.message });
@@ -42,7 +42,6 @@ export const toggleLikeCreation = async (req, res) => {
         let updatedLikes;
         let message;
 
-        console.log(currentLikes);
         // if userId includes in the current likes we are going to remove that one
         if (currentLikes.includes(userIdStr)) {
             updatedLikes = currentLikes.filter((user) => user != userIdStr);

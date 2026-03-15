@@ -4,7 +4,6 @@ import sql from "../configs/db.js";
 
 // controller to get the get logged in user creations for example you are logged in and you are tryin go get the creations of you
 export const getUserCreations = async (req, res) => {
-
     try {
         const { userId } = req.auth();
         const creations = await sql`SELECT * FROM creations WHERE user_id = ${userId} ORDER BY created_at DESC`;
@@ -18,7 +17,8 @@ export const getUserCreations = async (req, res) => {
 // get creations which are public only
 export const getPublicCreations = async (req, res) => {
     try {
-        const creations = await sql`SELECT * FROM creations WHERE public = true ORDER BY created_at DESC`;
+        const creations = await sql`SELECT * FROM creations WHERE publish = true ORDER BY created_at DESC`;
+        console.log(creations);
         return res.json({ success: true, creations });
     } catch (error) {
         return res.json({ success: false, message: error.message });

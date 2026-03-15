@@ -134,12 +134,11 @@ export const generateImage = async (req, res) => {
                 headers: {
                     'x-api-key': process.env.CLIPDROP_API_KEY,
                 },
-                responseType: arrayBuffer
+                responseType: "arraybuffer"
             }
         );
 
         const base64Image = `data:image/png;base64,${Buffer.from(data, 'binary').toString('base64')}`
-
         const { secure_url } = await cloudinary.uploader.upload(base64Image);
 
         await sql` INSERT INTO creations (user_id,prompt,content,type,publish) VALUES (${userId},${prompt},${secure_url},'image', ${publish ?? false})`;

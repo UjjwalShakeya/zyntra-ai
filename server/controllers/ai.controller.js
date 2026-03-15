@@ -4,8 +4,7 @@ import { clerkClient } from "@clerk/express";
 import axios from "axios";
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
-import { PDFParse } from "pdf-parse";
-import { arrayBuffer } from "stream/consumers";
+import { PDFParse } from 'pdf-parse';
 
 const AI = new OpenAI({
     apiKey: process.env.GEMINI_API_KEY,
@@ -245,10 +244,10 @@ export const resumeReview = async (req, res) => {
             return res.json({ success: false, message: "Resume file size exceeds allowed size (5MB)." })
         }
 
-        const dataBuffer = fs.readFileSync(resume.path);
-        const parser = new PDFParse(dataBuffer);
-        const pdfData = await parser.getText(dataBuffer);
-
+        const dataBuffer = await fs.promises.readFile(resume.path);
+        const parser = new PDFParse(new Uint8Array(dataBuffer));
+        const pdfData = await parser.getText();
+        await parser.destroy();
 
         const prompt = `Review the following resume and provide constructive feedback on its strengths, weaknesses, and areas for improvement. Resume Content:\n\n${pdfData.text}`;
 
@@ -257,22 +256,23 @@ export const resumeReview = async (req, res) => {
             messages: [
                 {
                     role: "user",
-                    content: prompt,
-                },
+                    content: prompt
+                }
             ],
             temperature: 0.7,
-            max_tokens: 1000
-        })
+            // max_tokens: 1000
+        });
+
 
         const content = response.choices[0].message.content;
 
         await sql` INSERT INTO creations (user_id,prompt,content,type) VALUES (${userId},'Review the uploaded resume',${content},'resume-review')`;
 
         // responding with content
-        res.json({ success: true, content })
+        return res.json({ success: true, content })
 
     } catch (error) {
         console.log(error.message);
-        res.json({ success: false, message: error.message });
+        return res.json({ success: false, message: error.message });
     }
 };

@@ -40,6 +40,26 @@ const Community = () => {
         }
     }
 
+    const imageLikeToggle = async (id) => {
+        try {
+            const { data } = await axios.post('/api/user/toggle-like-creation', { id }, {
+                headers: {
+                    Authorization: `Bearer ${await getToken()}`
+                }
+            });
+
+            if (data.success) {
+                toast.success(data.message);
+                await fetchCreations();
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error(error.message)
+
+        }
+    }
+
     // fetching data and setting up in using setCreation
     useEffect(() => {
         if (user) {
@@ -47,7 +67,7 @@ const Community = () => {
         }
     }, [user])
 
-    return (
+    return !loading ?  (
         <div className='flex-1 h-full flex flex-col gap-4 p-6'>
             Creations
             <div className='bg-white h-full w-full rounded-xl overflow-y-scroll'>
@@ -60,17 +80,19 @@ const Community = () => {
                             <div className='flex gap-1 items-center'>
                                 <p>{creation.likes.length}</p>
                                 {/* this logic will check where you youself have liked or not if your id is existing in the creation likes array then it will fill red color or it will leave it as white */}
-                                <Heart className={`min-w-5 h-5 hover:scale-110 cursor-pointer ${creation.likes.includes(user.id) ? 'fill-red-500 text-red-600' : 'text-white'}`} />
+                                <Heart onClick={() => imageLikeToggle(creation.id)} className={`min-w-5 h-5 hover:scale-110 cursor-pointer ${creation.likes.includes(user.id) ? 'fill-red-500 text-red-600' : 'text-white'}`} />
                             </div>
                         </div>
                     </div>
                 ))}
             </div>
 
-        </div>
+        </div>)  : (
+            <div className='flex justify-center items-center h-full'>
+                <span className='w-10 h-10 my-1 rounded-full border-3 border-primary border-t-transparent animate-spin'></span>
+            </div>
+        )
 
-
-    )
 }
 
 export default Community
